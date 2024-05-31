@@ -1,0 +1,28 @@
+ul.horizontal-list {
+    list-style: none;
+    background-color: #ffa7a7;
+    color: white;
+    display: inline-block;
+    padding: 1rem 2rem;
+    margin-top: 80px;
+    margin-left: 321px;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  
+  ul.horizontal-list li {
+    display: inline-block;
+    padding: 0 0.5rem;
+    min-width: 7rem;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+  }
+  ul.horizontal-list li:active{
+    text-decoration: underline;
+  }
+  ul.horizontal-list li:not(:last-child) {
+    border-right: 1px solid white;
+  }
+  
