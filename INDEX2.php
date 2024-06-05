@@ -7,12 +7,11 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		
+
         <!--font-family-->
 		<link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
 		<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
-		
         
         <!-- title of site -->
         <title>Le Grand Maroc Car</title>
@@ -49,9 +48,9 @@
         
         <!--responsive.css-->
         <link rel="stylesheet" href="assets/css/responsive.css">
-
 		<!-- reservation form -->
 		<link rel="stylesheet" href="RESERVATION.css">
+        
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		
@@ -83,7 +82,7 @@
 				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
 				                    <i class="fa fa-bars"></i>
 				                </button>
-				                <a class="navbar-brand" href="index.php"><img src="assets/logo/Red & White Minimalist Automotive Car Logo (2).png" style="width: 150px; height: 150px; margin-top: -40px;"><span></span></a>
+				                <a class="navbar-brand" href="index.php"><img src="Red & White Minimalist Automotive Car Logo (2).png" style="width: 150px; height: 150px; margin-top: -40px;"><span></span></a>
 
 				            </div><!--/.navbar-header-->
 				            <!-- End Header Navigation -->
@@ -269,7 +268,18 @@ Le Dacia Duster est un SUV compact polyvalent, reconnu pour son design robuste, 
 
 
 					<?php
-include('connection.php');
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "location";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 $sql = "SELECT * FROM voitures ";
 $result = $conn->query($sql);
@@ -388,6 +398,33 @@ if ($result->num_rows > 0) {
 </div>
 
 <!-- end details page -->
+
+<script>
+    // Get references to the date inputs and number of days input
+    var startDateInput = document.getElementById("date1");
+    var endDateInput = document.getElementById("date2");
+    var numDaysInput = document.getElementById("pzip");
+	var total = document.getElementById('pcity');
+    // Add event listeners to the date inputs
+    startDateInput.addEventListener("change", calculateDays);
+    endDateInput.addEventListener("change", calculateDays);
+
+    // Function to calculate the number of days between the start and end dates
+    function calculateDays() {
+        var startDate = new Date(startDateInput.value);
+        var endDate = new Date(endDateInput.value);
+
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+            var timeDifference = endDate.getTime() - startDate.getTime();
+            var daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+            numDaysInput.value = daysDifference;
+        } else {
+            numDaysInput.value = "probleme";
+        }
+    }
+	calculateDays();
+</script>
+
 <?php
 
 $i++;
@@ -396,7 +433,7 @@ $i++;
     echo "0 results";
 }
 
-
+$conn->close();
 ?>
 				
 					</div>
@@ -414,24 +451,43 @@ $i++;
 			<div class="container">
 				<div class="brand-area">
 					<div class="owl-carousel owl-theme brand-item">
-						<? $sql2 = "SELECT * FROM brand ";
-							$result2 = $conn->query($sql2); 
-							if($result2->num_rows > 0){
-								while($row2 = $result2->fetch_assoc()){
-								$imageUrlbrand = $row2["URL"];
-								$brand = $row2["Brand_Nom"];
-						?>
 						<div class="item">
 							<a href="#">
-								<img src="<? echo $imageUrlbrand ?>" alt="brand-image" title="<? echo $brand ?>"/>
+								<img src="assets/images/brand/pngwing.com (1).png" alt="brand-image" />
 							</a>
 						</div><!--/.item-->
-						
-						<? }
-							}else{
-								echo "no resault";
-							}
-						$conn->close() ?><!--/.item-->
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com (2).png" alt="brand-image" />
+							</a>
+						</div><!--/.item-->
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com (3).png" alt="brand-image" />
+							</a>
+						</div><!--/.item-->
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com (4).png" alt="brand-image" />
+							</a>
+						</div><!--/.item-->
+
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com (8).png" alt="brand-image" />
+							</a>
+						</div><!--/.item-->
+
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com.png" alt="brand-image" />
+							</a>
+						</div>
+						<div class="item">
+							<a href="#">
+								<img src="assets/images/brand/pngwing.com (5).png" alt="brand-image" />
+							</a>
+						</div><!--/.item-->
 					</div><!--/.owl-carousel-->
 				</div><!--/.clients-area-->
 
@@ -451,17 +507,16 @@ $i++;
 					<div class="row">
 									<h1 class=".testimonial-person h4 ">Cuntact nous</h1>
 										<form class="cf" method="post" action="contact.php">
-											<div class="half left cf">
-												<input type="text" name="input-name" placeholder="Nom">
-												<input type="email" name="input-email" placeholder="Email">
-												<input type="text" name="input-telephone" placeholder="Telephone">
-											</div>
-											<div class="half right cf">
-												<textarea id="message" type="text" name="input-message" placeholder="Message"></textarea>
-											</div>  
-												<input type="submit" class="welcome-btn" value="Submit" id="input-submit">
+										<div class="half left cf">
+										<input type="text" name="input-name" placeholder="Nom">
+										<input type="email" name="input-email" placeholder="Email">
+										<input type="text" name="input-telephone" placeholder="Telephone">
+										</div>
+										<div class="half right cf">
+										<textarea id="message" type="text" name="input-message" placeholder="Message"></textarea>
+										</div>  
+										<input type="submit" class="welcome-btn" value="Submit" id="input-submit">
 										</form>
-										
 									</div><!--/.foot-email-icon-->
 								
 							</div>
@@ -521,13 +576,6 @@ $i++;
 		<script src="assets/js/fermer.js"></script>
         <!-- Reservation function -->
 		
-		<!-- payment function -->
-		<script src="assets/js/payment.js"></script>
-		
-        <script>
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip()
-          })</script>
 		
 	</body>
 	
