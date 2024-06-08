@@ -30,7 +30,7 @@ include('../../connection.php');
             $encodedVariable = urlencode($username);
             
         
-            header('Location: Application_web.php?variable=' . $encodedVariable);
+            header('Location: Application_web.php?variable='.$encodedVariable);
             
             $success = true;
             break;

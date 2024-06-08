@@ -92,10 +92,8 @@
 				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
 				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
 				                    <li class=" scroll active"><a href="#home">accueil</a></li>
-				                    <li class="scroll"><a href="#service">servise</a></li>
 				                    <li class="scroll"><a href="#new-cars">Nouvelles voitures</a></li>
 									<li class="scroll"><a href="#featured-cars">voitures</a></li>
-				                    <li class="scroll"><a href="#brand">Marque</a></li>
 				                    <li class="scroll"><a href="#contact">contact nous</a></li>
 				                </ul><!--/.nav -->
 				            </div><!-- /.navbar-collapse -->
@@ -126,48 +124,7 @@
 		<!--welcome-hero end -->
 
 		<!--service start -->
-		<section id="service" class="service">
-			<div class="container">
-				<div class="service-content">
-					<div class="row">
-						<div class="col-md-4 col-sm-6">
-							<div class="single-service-item">
-								<div class="single-service-icon">
-									<i class="flaticon-car"></i>
-								</div>
-								<h2><a href="#featured-cars">Louer <span> du </span> voiture</a></h2>
-								<p>
-									louez dès maintenant une voiture de votre choix en cliquant ici.  
-								</p>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-6">
-							<div class="single-service-item">
-								<div class="single-service-icon">
-									<i class="flaticon-car-repair"></i>
-								</div>
-								<h2><a href="#">connaître les règles</a></h2>
-								<p>
-									pour savoir ce qui se passe lorsque vous louez une voiture dans notre entreprise  
-								</p>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-6">
-							<div class="single-service-item">
-								<div class="single-service-icon">
-									<i class="flaticon-car-1"></i>
-								</div>
-								<h2><a href="#">Assistance assurance</a></h2>
-								<p>
-									découvrez notre service d'assurance et comment vous aider. 
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div><!--/.container-->
-
-		</section><!--/.service-->
+		<!--/.service-->
 		<!--service end-->
 
 		<!--new-cars start -->
@@ -466,22 +423,7 @@ $i++;
 								
 							</div>
 						
-				<div class="footer-copyright">
-					<div class="row">
-						<div class="col-sm-6">
-							
-						</div>
-						<div class="col-sm-6">
-							<div class="footer-social">
-								<a href="#"><i class="fa fa-facebook"></i></a>	
-								<a href="#"><i class="fa fa-instagram"></i></a>
-								<a href="#"><i class="fa fa-linkedin"></i></a>
-								<a href="#"><i class="fa fa-pinterest-p"></i></a>
-								<a href="#"><i class="fa fa-behance"></i></a>	
-							</div>
-						</div>
-					</div>
-				</div><!--/.footer-copyright-->
+			<!--/.footer-copyright-->
 			</div><!--/.container-->
 
 			<div id="scroll-Top">

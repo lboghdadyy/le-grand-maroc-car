@@ -1,3 +1,16 @@
+<?
+include('../../connection.php');
+$deleted = false;
+$update = false;
+
+if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
+	header('Location: ../../master.php');
+	exit; // It's a good practice to call exit after a header redirect.
+} else {
+	$usernameadmin = $_GET['variable'];
+	// Your additional code here
+}
+?>
 <!doctype html>
 <html class="no-js" lang="en">
 
@@ -20,7 +33,7 @@
 	<link rel="shortcut icon" type="image/icon" href="assets/logo/Red & White Minimalist Automotive Car Logo (2).png" />
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <!-- SweetAlert2 JS -->
+	<!-- SweetAlert2 JS -->
 	<!--font-awesome.min.css-->
 	<link rel="stylesheet" href="../css/font-awesome.min.css">
 
@@ -57,7 +70,7 @@
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 
 </head>
@@ -66,25 +79,28 @@
 	<!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
-	<? 
-	include('../../connection.php');
-	$deleted = false;
-
-	if (isset($_GET['variable'])) {
-		$username = $_GET['variable'];
-	}
+	<?
 	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_message'])) {
 		$id = intval($_POST['id_message']);
-		$sql = "DELETE FROM contact WHERE ID_C= $id";
-		if ($conn->query($sql) === TRUE) {
+		$sqlmessage = "DELETE FROM contact WHERE ID_C= $id";
+		if ($conn->query($sqlmessage) === TRUE) {
 			$deleted = true;
 		} else {
 			$deleteError = $conn->error;
 		}
 	}
-	
+	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_reservation'])) {
+		$idres = intval($_POST['id_reservation']);
+		$stmt = $conn->prepare("UPDATE reservation SET Validation = 'oui' WHERE ID_reservation = ?");
+		$stmt->bind_param("i", $idres);
+		if ($stmt->execute()) {
+			$update = true;
+		} else {
+			$updateerror = $stmt->error;
+		}
+	}
 	?>
-	
+
 	<!--welcome-hero start -->
 	<section id="home" class="welcome-hero">
 
@@ -129,7 +145,7 @@
 	<section id="new-cars" class="new-cars">
 		<div class="container">
 			<div class="section-header">
-				<h2>Bienvenue <? echo $username; ?></h2>
+				<h2>Bienvenue <? echo $usernameadmin; ?></h2>
 			</div>
 			<ul class="horizontal-list">
 				<li onclick="showSection('featured-cars')">Les voitures</li>
@@ -146,7 +162,7 @@
 				<h2>Les voitures</h2>
 			</div>
 			<div class="featured-cars-content">
-				<class="row">
+				<div class="row">
 					<?php
 					include("../../connection.php");
 
@@ -170,7 +186,10 @@
 								$disponibility = "indisponible";
 							}
 							$voitureid = "voiture" . $i;
-
+							$marque_input = 'marque' . $i;
+							$module_input = 'module' . $i;
+							$disponibility_input = 'disponibility' . $i;
+							$prix_input = 'prix' . $i;
 
 					?>
 
@@ -178,7 +197,7 @@
 								<div class="single-featured-cars">
 									<div class="featured-img-box">
 										<div class="featured-cars-img">
-											<img src="../../<?php echo $imageUrl; ?>" onclick="hide_voitures('<? echo $voitureid ?>', event)"" alt=" Car Image">
+											<img src="../../<?php echo $imageUrl; ?>" alt=" Car Image">
 										</div>
 										<div class="featured-model-info">
 											<p>Marque: <?php echo $marque; ?><br>
@@ -191,7 +210,10 @@
 										</div>
 									</div>
 									<div class="featured-cars-txt">
-										<h2><i class="fa fa-pencil-square-o"></i><i class="fa fa-trash" style="margin-left: 20px;"></i></h2>
+										<h2>
+											<i class="fa fa-pencil-square-o" style="cursor: pointer;" onclick="hide_voitures('<? echo $voitureid ?>', event)"></i>
+											<i class="fa fa-trash" style="margin-left: 20px;" onclick="Swal.fire({ icon:'question',title:'attetion !',text:'are you sure you want to delet it',showConfirmButton: true ,showCancelButton: true});"></i>
+										</h2>
 									</div>
 								</div>
 							</div>
@@ -207,26 +229,44 @@
 										<div class="new-cars-txt">
 											<h2><a href="#"><? echo $marque . " " . $module ?></a></h2>
 											<p>
-
-												<?
-												echo $description;
-												?>
+												Marque: <?php echo $marque . " "; ?><i onclick="modifier_voiture('<? echo $marque_input ?>')" class="fa fa-pencil-square-o"></i><br>
+												<input id="<? echo $marque_input ?>" type="text" placeholder="Marque" class="hidden" /><br>
+												Modèle: <?php echo $module . " "; ?><i onclick="modifier_voiture('<? echo $module_input ?>')" class="fa fa-pencil-square-o"></i><br>
+												<input id="<? echo $module_input ?>" type="text" placeholder="Module" class="hidden" /><br>
+												Disponible : <? echo $disponibility . " "; ?><i onclick="modifier_voiture('<? echo $disponibility_input ?>')" class="fa fa-pencil-square-o"></i><br>
+												<input id="<? echo $disponibility_input ?>" type="text" placeholder="Disponibility" class="hidden" /><br>
+												<span class="featured-hp-span">Prix: <?php echo $prix; ?>DH/Jour </span><i onclick="modifier_voiture('<? echo $prix_input ?>')" class="fa fa-pencil-square-o"></i><br>
+												<input id="<? echo $prix_input ?>" type="text" placeholder="Prix" class="hidden" /><br>
 											</p>
 
-											<button class="welcome-btn new-cars-btn" onclick="Reservation('<? echo $voitureid ?>','<? echo $reservationid ?>',event)">
-												Reserver
-											</button>
-											<button class="welcome-btn new-cars-btn" onclick="show_voitures('<? echo $voitureid ?>', event)">Fermer</button>
+
+											<button class="btn btn-primary btn-lg" onclick="show_voitures('<? echo $voitureid ?>', event)">Anuler</button>
+											<button class="btn btn-warning btn-lg">Sauvgarder</button>
 										</div><!--/.new-cars-txt-->
 									</div><!--/.col-->
 								</div><!--/.row-->
 							</div>
 
 					<?
+							$i++;
 						}
 					} ?>
-			</div><!--/.new-cars-->
-		</div>
+					<div class="col-lg-3 col-md-4 col-sm-6" onclick="hide_voitures('Edit_id', event)">
+						<div class="single-featured-cars">
+							<div class="featured-img-box">
+								<div class="featured-cars-img">
+									<img src="../images/add.png" alt=" Car Image">
+								</div>
+								<div class="featured-model-info">
+									<h2>Ajouter une nouvelle voiture ?
+									</h2>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div><!--/.new-cars-->
+			</div>
 		</div>
 
 	</section>
@@ -259,11 +299,7 @@
 												<img src="..\images\pngwing.com.png" alt="image of clients person" onclick="show_message('<? echo 'message ' . $i ?>')" />
 											</div>
 										</div><!--/.testimonial-info-->
-										<div class="testimonial-comment">
-											<p>
-												<i></i>
-											</p>
-										</div><!--/.testimonial-comment-->
+										<!--/.testimonial-comment-->
 										<div class="testimonial-person">
 											<h2><? echo $nom_et_prenom_contact; ?></h2>
 
@@ -273,9 +309,9 @@
 							</div>
 							<div class="hidden" id="message <? echo $i ?>">
 								<dl class="row">
-									<dt class="col-sm-3"><button onclick="cancel('<? echo 'message ' . $i ?>')" class="btn btn-warning">Fermer<button>
-										
-												<form method="post" action="Application_web.php">
+									<dt class="col-sm-3"><button onclick="cancel('<? echo 'message ' . $i ?>')" class="btn btn-primary">Fermer<button>
+
+												<form method="post">
 													<input type="text" class="hidden" name="id_message" value="<? echo $messageid ?>" />
 													<button class="btn btn-danger" type="submit">Supprimer</button>
 												</form>
@@ -305,6 +341,7 @@
 					<th scope="col">Telephone</th>
 					<th scope="col">Date de debut</th>
 					<th scope="col">Date de fin</th>
+					<th scope="col">Disbonibility</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -320,11 +357,18 @@
 						$res = $conn->query($querysql);
 						while ($rowvoiture = $res->fetch_assoc()) {
 							$voituree = $rowvoiture["marque"] . " " . $rowvoiture["module"];
+							$disponibility_resault = $rowvoiture["Disponibility"];
+							if ($disponibility_resault == '1') {
+								$dispoo = 'oui';
+							} else {
+								$dispoo = 'Non';
+							}
 						}
 						$nom_et_prenom_reservation = $rowreservation["Nom_et_Prenom_c"];
 						$tele_res = $rowreservation["Telephone_c"];
 						$date_de_debut = $rowreservation["date_de_debut"];
 						$date_de_fin = $rowreservation["date_de_fin"];
+						$res_id = $rowreservation["ID_reservation"];
 
 				?>
 						<tr>
@@ -333,8 +377,12 @@
 							<td><? echo $tele_res ?></td>
 							<td><? echo $date_de_debut ?></td>
 							<td><? echo $date_de_fin ?></td>
+							<td><? echo $dispoo ?></td>
 							<td>
-								<form action="valider_command.php"><button class="btn btn-sm btn-danger" style="margin-bottom: 10px ;">Valider</button></form>
+								<form method="post">
+									<input class="hidden" type="text" name="id_reservation" value="<? echo $res_id ?>" />
+									<button type="submit" class="btn btn-sm btn-danger" style="margin-bottom: 10px;">Valider</button>
+								</form>
 							</td>
 						</tr>
 				<?
@@ -343,16 +391,24 @@
 				?>
 			</tbody>
 		</table>
+	</section>
+	<section id="more_section" class="tab-content hidden">
+		<div class="container">
+			<div class="service-content">
+				<div class="row">
+					<div class="col-md-4 col-sm-6">
+						<div class="single-service-item" style="cursor: pointer;" onclick="gerer_admins();">
+							<div class="single-service-icon">
+								<img src="../images/manager.png">
+							</div>
+							<h2>gérer les administrateurs</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.container-->
 
 	</section>
-	<!-- end reservation section-->
-	<!-- more section -->
-	<section class="tab-content hidden" id="more_section">
-
-	</section>
-
-	<!--blog end -->
-
 	<?
 	$conn->close();
 	?>
@@ -361,24 +417,29 @@
 	<script src="../js/aficher_les_voitures_admin.js"></script>
 	<script src="../js/Voitures_edit.js"></script>
 	<script src="../js/les_messsages.js"></script>
+	<script src="../js/routour.js"></script>
+	<script src="../js/fermer.js"></script>
+	<script src="../js/edit.js"></script>
 	<script>
-    <?php if ($deleted): ?>
-        Swal.fire({
-            icon: 'success',
-            title: 'Deleted!',
-            text: 'Le message a ete bien supprime .',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    <?php elseif (isset($deleteError)): ?>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error deleting record: <?php echo $deleteError; ?>'
-        });
-    <?php endif; ?>
-    </script>
-
+		<?php if ($deleted) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'Deleted!',
+				text: 'Le message a ete bien supprime .',
+				showConfirmButton: true,
+			});
+		<?php endif; ?>
+	</script>
+	<script>
+		<?php if ($update) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'valideé',
+				text: 'La reservation a été valideé',
+				showConfirmButton: true,
+			})
+		<?php endif ?>
+	</script>
 </body>
 
 </html>
