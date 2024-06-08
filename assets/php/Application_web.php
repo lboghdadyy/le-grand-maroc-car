@@ -99,6 +99,71 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 			$updateerror = $stmt->error;
 		}
 	}
+	$f = 0;
+
+	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['new_Marque']) && isset($_POST['New_module']) && isset($_POST['new_price']) && isset($_POST['new_dispo'])) {
+		$new_marque = $_POST['new_Marque'];
+		$new_module = $_POST['New_module'];
+		$new_price = $_POST['new_price'];
+		$new_dispo = $_POST['new_dispo']; // Corrected variable name
+		$idd = intval($_POST['id']);
+
+		if (!empty($new_marque)) {
+			$st = $conn->prepare("UPDATE `voitures` SET marque = ? WHERE ID_voiture = ?");
+			if ($st) {
+				$st->bind_param("si", $new_marque, $idd);
+				if ($st->execute()) {
+					$f++;
+				}
+				$st->close();
+			} else {
+				echo "Error preparing statement for marque: " . $conn->error;
+			}
+		}
+
+		if (!empty($new_module)) {
+			$st = $conn->prepare("UPDATE `voitures` SET module = ? WHERE ID_voiture = ?");
+			if ($st) {
+				$st->bind_param("si", $new_module, $idd);
+				if ($st->execute()) {
+					$f++;
+				}
+				$st->close();
+			} else {
+				echo "Error preparing statement for module: " . $conn->error;
+			}
+		}
+
+		if (!empty($new_price)) {
+			$st = $conn->prepare("UPDATE `voitures` SET prix_voiture = ? WHERE ID_voiture = ?");
+			if ($st) {
+				$st->bind_param("ii", $new_price, $idd); // Corrected to "ii" assuming price is an integer
+				if ($st->execute()) {
+					$f++;
+				}
+				$st->close();
+			} else {
+				echo "Error preparing statement for price: " . $conn->error;
+			}
+		}
+
+		if (!empty($new_dispo)) {
+			$st = $conn->prepare("UPDATE `voitures` SET Disponibility = ? WHERE ID_voiture = ?");
+			if ($st) {
+				$st->bind_param("ii", $new_dispo, $idd); // Corrected to "ii" assuming available is an integer
+				if ($st->execute()) {
+					$f++;
+				}
+				$st->close();
+			} else {
+				echo "Error preparing statement for available: " . $conn->error;
+			}
+		}
+
+		echo "<script>alert('{$f} modification(s) have been committed.');</script>";
+	}
+
+
 	?>
 
 	<!--welcome-hero start -->
@@ -180,11 +245,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							$prix = $row["prix_voiture"];
 							$description = $row["description"];
 							$dispo = $row["Disponibility"];
-							if ($dispo == 1) {
-								$disponibility = "disponible";
-							} else {
-								$disponibility = "indisponible";
-							}
+							$Etat = $row["Nouvelles_Voitures"];
 							$voitureid = "voiture" . $i;
 							$marque_input = 'marque' . $i;
 							$module_input = 'module' . $i;
@@ -203,7 +264,8 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 											<p>Marque: <?php echo $marque; ?><br>
 												Couleur: <?php echo $couleur; ?><br>
 												Modèle: <?php echo $module; ?><br>
-												Disponible : <? echo $disponibility; ?><br>
+												Disponible : <? echo $dispo; ?><br>
+												nouvelle : <? echo $Etat; ?><br>
 												<span class="featured-hp-span">Prix: <?php echo $prix; ?> DH/Jour</span>
 												Manual
 											</p>
@@ -227,21 +289,24 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 									</div>
 									<div class="col-md-5 col-sm-12">
 										<div class="new-cars-txt">
-											<h2><a href="#"><? echo $marque . " " . $module ?></a></h2>
-											<p>
-												Marque: <?php echo $marque . " "; ?><i onclick="modifier_voiture('<? echo $marque_input ?>')" class="fa fa-pencil-square-o"></i><br>
-												<input id="<? echo $marque_input ?>" type="text" placeholder="Marque" class="hidden" /><br>
-												Modèle: <?php echo $module . " "; ?><i onclick="modifier_voiture('<? echo $module_input ?>')" class="fa fa-pencil-square-o"></i><br>
-												<input id="<? echo $module_input ?>" type="text" placeholder="Module" class="hidden" /><br>
-												Disponible : <? echo $disponibility . " "; ?><i onclick="modifier_voiture('<? echo $disponibility_input ?>')" class="fa fa-pencil-square-o"></i><br>
-												<input id="<? echo $disponibility_input ?>" type="text" placeholder="Disponibility" class="hidden" /><br>
-												<span class="featured-hp-span">Prix: <?php echo $prix; ?>DH/Jour </span><i onclick="modifier_voiture('<? echo $prix_input ?>')" class="fa fa-pencil-square-o"></i><br>
-												<input id="<? echo $prix_input ?>" type="text" placeholder="Prix" class="hidden" /><br>
-											</p>
+											<form method="POST">
+												<h2><a href="#"><? echo $marque . " " . $module ?></a></h2>
+												<p>
+													<input value="<? echo $id ?>" class="hidden" name="id">
+													Marque: <?php echo $marque . " "; ?><i onclick="modifier_voiture('<? echo $marque_input ?>')" class="fa fa-pencil-square-o"></i><br>
+													<input name="new_Marque" id="<? echo $marque_input ?>" type="text" placeholder="Marque" class="hidden" /><br>
+													Modèle: <?php echo $module . " "; ?><i onclick="modifier_voiture('<? echo $module_input ?>')" class="fa fa-pencil-square-o"></i><br>
+													<input name="New_module" id="<? echo $module_input ?>" type="text" placeholder="Module" class="hidden" /><br>
+													Disponible : <? echo $dispo . " "; ?><i onclick="modifier_voiture('<? echo $disponibility_input ?>')" class="fa fa-pencil-square-o"></i><br>
+													<input name="new_dispo" id="<? echo $disponibility_input ?>" type="text" placeholder="Disponibility" class="hidden" /><br>
+													<span class="featured-hp-span">Prix: <?php echo $prix; ?>DH/Jour </span><i onclick="modifier_voiture('<? echo $prix_input ?>')" class="fa fa-pencil-square-o"></i><br>
+													<input name="new_price" id="<? echo $prix_input ?>" type="text" placeholder="Prix" class="hidden" /><br>
+												</p>
 
 
-											<button class="btn btn-primary btn-lg" onclick="show_voitures('<? echo $voitureid ?>', event)">Anuler</button>
-											<button class="btn btn-warning btn-lg">Sauvgarder</button>
+												<button class="btn btn-primary btn-lg" onclick="show_voitures('<? echo $voitureid ?>', event)">Anuler</button>
+												<button class="btn btn-warning btn-lg" type="submit">Sauvgarder</button>
+											</form>
 										</div><!--/.new-cars-txt-->
 									</div><!--/.col-->
 								</div><!--/.row-->
