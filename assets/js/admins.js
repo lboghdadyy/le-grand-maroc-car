@@ -10,5 +10,10 @@ function gerer_admins(admins) {
     if (!form.classList.contains('hidden')) {
         form.classList.add('hidden');
     }
+    var addform = document.getElementById('add_form');
+    if (!addform.classList.contains('hidden')) {
+        addform.classList.add('hidden');
+    }
+
 }
 

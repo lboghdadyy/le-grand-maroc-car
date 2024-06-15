@@ -1,4 +1,5 @@
 <?
+// admin edit
 $admin_update;
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['adminId'], $_POST['adminName'], $_POST['adminUsername'], $_POST['adminEmail'], $_POST['adminPhone'])) {
     $f = 0;
@@ -73,5 +74,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['adminId'], $_POST['adm
         }
     }
 } else {
-   $f=404;
+    $f = 404;
+}
+//delete an admin !!!!
+$deleted_admin = false;
+$message = "";
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delet_admin_id'], $_POST['admin_respo'])) {
+    $admin_deleted_id = intval($_POST['delet_admin_id']);
+    $admin_respo = $_POST["admin_respo"];
+
+    $sql = "SELECT * FROM admins WHERE username = '$admin_respo'";
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $role = $row['role'];
+        $id_admin_respo = $row['ID_admin'];
+        if ($role === 'Master') {
+            if ($admin_deleted_id = !$id_admin_respo) {
+                $st_delete = $conn->prepare("DELETE FROM admins WHERE ID_admin = ?");
+                $st_delete->bind_param("i", $admin_deleted_id);
+                if ($st_delete->execute()) {
+                    $deleted_admin = true;
+                    $message = "L'admin a été supprimé.";
+                } else {
+                    $message = "Erreur lors de la suppression de l'admin.";
+                }
+                $st_delete->close();
+            } else {
+                $message = 'désolé, vous ne pouvez pas vous supprimer en tant que maître';
+            }
+        } else {
+            $message = "L'accès est refusé.";
+        }
+    } else {
+        $message = "Aucun utilisateur trouvé avec le nom d'utilisateur donné.";
+    }
+    echo $message;
+}
+// add admin
+if (
+    $_SERVER["REQUEST_METHOD"] == "POST" &&
+    isset($_POST['role'], $_POST['adminName'], $_POST['adminUsername'], $_POST['adminEmail'], $_POST['adminPhone'], $_POST['admin_password'])
+) {
+
+    $role = $_POST['role'];
+    $adminName = $_POST['adminName'];
+    $adminUsername = $_POST['adminUsername'];
+    $adminEmail = $_POST['adminEmail'];
+    $adminPhone = $_POST['adminPhone'];
+    $admin_password = $_POST['admin_password'];
+
+    $stmt = $conn->prepare("INSERT INTO admins (ID_admin, role, Password, Nom_admin, username, Telephone_admin, Email_admin) VALUES (null, ?, ?, ?, ?, ?, ?)");
+
+    if ($stmt === false) {
+        die("Erreur de préparation de la requête: " . $conn->error);
+    }
+
+    $stmt->bind_param("ssssss", $role, $admin_password, $adminName, $adminUsername, $adminPhone, $adminEmail);
+
+    if ($stmt->execute()) {
+        $added_admin = true;
+    } 
+
+    // Close statement
+    $stmt->close();
 }

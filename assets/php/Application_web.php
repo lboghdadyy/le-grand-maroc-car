@@ -170,6 +170,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							$module_input = 'module' . $i;
 							$disponibility_input = 'disponibility' . $i;
 							$prix_input = 'prix' . $i;
+							$etat_input = 'etat' . $i;
 
 					?>
 
@@ -214,10 +215,16 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 													<input value="<? echo $id ?>" class="hidden" name="id">
 													Marque: <?php echo $marque . " "; ?><i onclick="modifier_voiture('<? echo $marque_input ?>')" class="fa fa-pencil-square-o"></i><br>
 													<input name="new_Marque" id="<? echo $marque_input ?>" type="text" placeholder="Marque" class="hidden" /><br>
+
+													Etat : <? echo $etat ?><i onclick="modifier_voiture('<? echo $etat_input ?>')" class="fa fa-pencil-square-o"></i><br>
+													<input type="text" <?  ?> class="hidden" name="new_etat" id="<? echo $etat_input ?>" placeholder="etat" /><br>
+
 													Modèle: <?php echo $module . " "; ?><i onclick="modifier_voiture('<? echo $module_input ?>')" class="fa fa-pencil-square-o"></i><br>
 													<input name="New_module" id="<? echo $module_input ?>" type="text" placeholder="Module" class="hidden" /><br>
+
 													Disponible : <? echo $dispo . " "; ?><i onclick="modifier_voiture('<? echo $disponibility_input ?>')" class="fa fa-pencil-square-o"></i><br>
 													<input name="new_dispo" id="<? echo $disponibility_input ?>" type="text" placeholder="Disponibility" class="hidden" /><br>
+
 													<span class="featured-hp-span">Prix: <?php echo $prix; ?>DH/Jour </span><i onclick="modifier_voiture('<? echo $prix_input ?>')" class="fa fa-pencil-square-o"></i><br>
 													<input name="new_price" id="<? echo $prix_input ?>" type="text" placeholder="Prix" class="hidden" /><br>
 												</p>
@@ -248,10 +255,55 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							</div>
 						</div>
 					</div>
+					<div class="hidden" id="Edit_id">
+						<form method="post">
+							<div class="form-group">
+								<label for="disponibility">Disponibility:</label>
+								<input type="text" class="form-control" id="disponibility" name="disponibility" required>
+							</div>
+
+							<div class="form-group">
+								<label for="marque">Marque:</label>
+								<input type="text" class="form-control" id="marque" name="marque" required>
+							</div>
+
+							<div class="form-group">
+								<label for="module">Module:</label>
+								<input type="text" class="form-control" id="module" name="module" required>
+							</div>
+
+							<div class="form-group">
+								<label for="couleur">Couleur:</label>
+								<input type="text" class="form-control" id="couleur" name="couleur" required>
+							</div>
+
+							<div class="form-group">
+								<label for="image">Image:</label>
+								<input type="text" class="form-control" id="image" name="image" required>
+							</div>
+
+							<div class="form-group">
+								<label for="prix_voiture">Prix Voiture:</label>
+								<input type="number" class="form-control" id="prix_voiture" name="prix_voiture" required>
+							</div>
+
+							<div class="form-group">
+								<label for="description">Description:</label>
+								<textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+							</div>
+
+							<input type="text" value="oui" name="etat" class="hidden">
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary btn-lg">Ajouter</button>
+								<button class="btn btn-primary btn-lg" onclick="show_voitures('Edit_id', event)">Fermer</button>
+							</div>
+						</form>
+					</div>
 
 				</div><!--/.new-cars-->
 			</div>
 		</div>
+
 
 	</section>
 	<section class="tab-content hidden container" id="Reservation_section">
@@ -356,7 +408,8 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 										</div><!--/.testimonial-info-->
 										<!--/.testimonial-comment-->
 										<div class="testimonial-person">
-											<h2><? echo $nom_et_prenom_contact; ?></h2>
+											<h2><? echo $nom_et_prenom_contact; ?></h2><br>
+
 
 										</div><!--/.testimonial-person-->
 									</div><!--/.testimonial-description-->
@@ -364,14 +417,18 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							</div>
 							<div class="hidden" id="message <? echo $i ?>">
 								<dl class="row">
-									<dt class="col-sm-3"><button onclick="cancel('<? echo 'message ' . $i ?>')" class="btn btn-primary">Fermer<button>
+									<dt class="col-sm-3">
+										<button title="Fermer" onclick="cancel('<? echo 'message ' . $i ?>')" class="btn btn-primary btn-lg">
+											<i class="fa fa-window-close"></i>
+										</button>
 
-												<form method="post">
-													<input type="text" class="hidden" name="id_message" value="<? echo $messageid ?>" />
-													<button class="btn btn-danger" type="submit">Supprimer</button>
-												</form>
+										<form method="post" style="margin-left: -10px;">
+											<input type="text" class="hidden" name="id_message" value="<? echo $messageid ?>" />
+											<button class="btn btn-danger btn-lg" title="Supprimer" type="submit"><i class="fa fa-trash"></i></button>
+										</form>
 									</dt>
-									<dt class="col-sm-3"><? echo $nom_et_prenom_contact ?></dt>
+									<dt class="col-sm-3"><? echo $nom_et_prenom_contact ?><br><? echo $email_contact ?></dt>
+
 									<dd class="col-sm-9"><? echo $message ?><br></dd>
 								</dl>
 
@@ -434,22 +491,41 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 									<td><?php echo $email_admin; ?></td>
 									<td><?php echo $tele_admin; ?></td>
 									<td>
-										<button class="btn btn-warning btn-sm" onclick="modifier_admin_detail('<?php echo $id_admin; ?>', '<?php echo $nom_admin; ?>', '<?php echo $user_admin; ?>', '<?php echo $email_admin; ?>', '<?php echo $tele_admin; ?>')">
+										<button class="btn btn-warning btn-lg" onclick="modifier_admin_detail('<?php echo $id_admin; ?>')">
 											<i class="fa fa-cog"></i>
 										</button>
 									</td>
 									<td>
-										<button class="btn btn-danger btn-sm">
-											<i class="fa fa-trash"></i>
-										</button>
+										<form style="margin-top: -15px;" method="post" onsubmit="confirmDeletion(event)">
+											<button type="submit" class="btn btn-danger btn-lg">
+												<i class="fa fa-trash"></i>
+											</button>
+											<input class="hidden" type="text" name="admin_respo" value="<? echo $usernameadmin ?>" />
+											<input type="text" class="hidden" name="delet_admin_id" value="<? echo $id_admin ?>">
+										</form>
 									</td>
 								</tr>
-						<?php
+								<tr>
+							<?php
 							}
 						} else {
 							echo "<tr><td colspan='6'>No records found</td></tr>";
 						}
-						?>
+							?>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<form style="margin-right: -30px; margin-top:-15px;">
+									<button class="btn btn-primary btn-lg" onclick="add_admin()">
+										<i class="fa fa-plus"></i>
+									</button>
+								</form>
+							</td>
+								</tr>
 					</tbody>
 				</table>
 			</div>
@@ -460,6 +536,11 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 					<div class="form-group">
 						<label for="adminId">ID</label>
 						<input type="text" class="form-control" id="adminId" name="adminId" readonly>
+					</div>
+					<div class="form-group">
+						<label for="ADmin-role">Role :</label>
+						<input type="text" name="role" id="roleadmin" class="form-control" />
+
 					</div>
 					<div class="form-group">
 						<label for="adminName">Nom & Prenom</label>
@@ -478,6 +559,37 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 						<input type="text" class="form-control" id="adminPhone" name="adminPhone">
 					</div>
 					<button type="submit" class="btn btn-primary">Save Changes</button>
+					<button type="button" class="btn btn-secondary" onclick="gerer_admins('admins')">Cancel</button>
+				</form>
+			</div>
+			<div id="add_form" class="hidden">
+				<h2>Ajouter un administrateur</h2>
+				<form method="post" onsubmit="confirmDeletion(event)">
+					<div class="form-group">
+						<label for="ADmin-role">Role :</label>
+						<input type="text" name="role" id="roleadmin" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label for="adminName">Nom & Prenom</label>
+						<input type="text" class="form-control" id="adminName" name="adminName">
+					</div>
+					<div class="form-group">
+						<label for="adminUsername">Username</label>
+						<input type="text" class="form-control" id="adminUsername" name="adminUsername">
+					</div>
+					<div class="form-group">
+						<label for="adminEmail">Email</label>
+						<input type="email" class="form-control" id="adminEmail" name="adminEmail">
+					</div>
+					<div class="form-group">
+						<label for="adminPhone">Telephone</label>
+						<input type="text" class="form-control" id="adminPhone" name="adminPhone">
+					</div>
+					<div class="form-group">
+						<label>Mot de pass</label>
+						<input type="text" class="form-control" id="admin_password" name="admin_password" />
+					</div>
+					<button type="submit" class="btn btn-primary">Ajouter</button>
 					<button type="button" class="btn btn-secondary" onclick="gerer_admins('admins')">Cancel</button>
 				</form>
 			</div>
@@ -518,6 +630,27 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 		}
 	</script>
 	<script>
+		<?php if ($added_voiture) : ?>
+			swal.fire({
+				icon: 'success',
+				title: 'success!',
+				text: 'cette voiture a été ajouteé .',
+				showConfirmButton: true,
+			})
+		<?php endif ?>
+	</script>
+	<script>
+		<?php if ($added_admin) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'success!',
+				text: 'cette admin a été ajouteé .',
+				showConfirmButton: true,
+
+			})
+		<?php endif ?>
+	</script>
+	<script>
 		<?php if ($deleted) : ?>
 			Swal.fire({
 				icon: 'success',
@@ -544,6 +677,21 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 				title: 'supprimée',
 				text: 'La reservation a été supprimée',
 				showConfirmButton: true,
+			})
+		<? endif ?>
+	</script>
+	<script>
+		<? if ($deleted_admin) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'supprimée',
+				showConfirmButton: true,
+			})
+		<? else : ?>
+			Swal.fire({
+				icon: 'warning',
+				text: '<? echo $message ?>',
+				showConfirmButton,
 			})
 		<? endif ?>
 	</script>
