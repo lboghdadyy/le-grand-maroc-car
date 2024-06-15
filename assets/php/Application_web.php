@@ -133,7 +133,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 						<th style="cursor: pointer;" onclick="showSection('featured-cars')">Les voitures</th>
 						<th style="cursor: pointer;" onclick="showSection('Reservation_section')">Les reservations</th>
 						<th style="cursor: pointer;" onclick="showSection('Messages_section')">Les messages</th>
-						<th style="cursor: pointer;" onclick="showSection('more_section')">Plus</th>
+						<th style="cursor: pointer;" onclick="showSection('more_section')">Option</th>
 					</tr>
 				</thead>
 			</table>
@@ -307,6 +307,9 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 
 	</section>
 	<section class="tab-content hidden container" id="Reservation_section">
+		<div class="section-header">
+			<h2>Les reservations</h2>
+		</div>
 		<table class="table table-striped table-dark">
 			<thead>
 				<tr>
@@ -446,6 +449,9 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 	<!-- reservation section -->
 
 	<section id="more_section" class="tab-content hidden">
+		<div class="section-header">
+			<h2>Option</h2>
+		</div>
 		<div class="container">
 			<div class="service-content">
 				<div class="row">
@@ -460,6 +466,9 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 				</div>
 			</div>
 			<div id="admins" class="hidden">
+				<div class="section-header">
+					<h2>Les administrateurs</h2>
+				</div>
 				<table class="table table-striped table-dark">
 					<thead>
 						<tr>

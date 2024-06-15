@@ -194,7 +194,7 @@
 													<? echo $description ?>
 												</p>
 
-												<button class="welcome-btn new-cars-btn" onclick="window.location.href='#'">
+												<button class="welcome-btn new-cars-btn" onclick="window.location.href='#featured-cars'">
 													Reserver maintenant
 												</button>
 											</div><!--/.new-cars-txt-->
@@ -270,7 +270,7 @@
 									<div class="row">
 										<div class="col-50">
 											<label>CIN :</label>
-											<input type="text" name="CIN" placeholder="Votre CIN" required/>
+											<input type="text" name="CIN" placeholder="Votre CIN" required />
 										</div>
 									</div>
 									<div class="row">
@@ -412,9 +412,11 @@
 	<!--contact start-->
 	<footer id="contact" class="contact">
 		<div class="container">
+			<div class="section-header">
+				<h2>contactez nous</h2>
+			</div>
 
 			<div class="row">
-				<h1 class=".testimonial-person h4 ">Cuntact nous</h1>
 				<form class="cf" method="post">
 					<div class="half left cf">
 						<input type="text" name="input-name" placeholder="Nom">
@@ -441,7 +443,7 @@
 
 		</div>
 	</footer><!--/.contact-->
-	
+
 	<script src="assets/js/reservation1.js"></script>
 	<script src="assets/js/jquery.js"></script>
 	<script src="assets/js/produicts.js"></script>
