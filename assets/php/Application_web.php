@@ -61,112 +61,27 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 
 	<!--responsive.css-->
 	<link rel="stylesheet" href="../css/responsive.css">
-	<!-- reservation form -->
 
-	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-
-	<!--[if lt IE 9]>
-			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 
 </head>
 
 <body>
-	<!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
+
 	<?
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_message'])) {
-		$id = intval($_POST['id_message']);
-		$sqlmessage = "DELETE FROM contact WHERE ID_C= $id";
-		if ($conn->query($sqlmessage) === TRUE) {
-			$deleted = true;
-		} else {
-			$deleteError = $conn->error;
-		}
-	}
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_reservation'])) {
-		$idres = intval($_POST['id_reservation']);
-		$stmt = $conn->prepare("UPDATE reservation SET Validation = 'oui' WHERE ID_reservation = ?");
-		$stmt->bind_param("i", $idres);
-		if ($stmt->execute()) {
-			$update = true;
-		} else {
-			$updateerror = $stmt->error;
-		}
-	}
-	$f = 0;
 
-	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['new_Marque']) && isset($_POST['New_module']) && isset($_POST['new_price']) && isset($_POST['new_dispo'])) {
-		$new_marque = $_POST['new_Marque'];
-		$new_module = $_POST['New_module'];
-		$new_price = $_POST['new_price'];
-		$new_dispo = $_POST['new_dispo']; // Corrected variable name
-		$idd = intval($_POST['id']);
+	include('application/deletemessage.php');
 
-		if (!empty($new_marque)) {
-			$st = $conn->prepare("UPDATE `voitures` SET marque = ? WHERE ID_voiture = ?");
-			if ($st) {
-				$st->bind_param("si", $new_marque, $idd);
-				if ($st->execute()) {
-					$f++;
-				}
-				$st->close();
-			} else {
-				echo "Error preparing statement for marque: " . $conn->error;
-			}
-		}
+	include('application/validate_res.php');
 
-		if (!empty($new_module)) {
-			$st = $conn->prepare("UPDATE `voitures` SET module = ? WHERE ID_voiture = ?");
-			if ($st) {
-				$st->bind_param("si", $new_module, $idd);
-				if ($st->execute()) {
-					$f++;
-				}
-				$st->close();
-			} else {
-				echo "Error preparing statement for module: " . $conn->error;
-			}
-		}
+	include('application/update_voiture.php');
 
-		if (!empty($new_price)) {
-			$st = $conn->prepare("UPDATE `voitures` SET prix_voiture = ? WHERE ID_voiture = ?");
-			if ($st) {
-				$st->bind_param("ii", $new_price, $idd); // Corrected to "ii" assuming price is an integer
-				if ($st->execute()) {
-					$f++;
-				}
-				$st->close();
-			} else {
-				echo "Error preparing statement for price: " . $conn->error;
-			}
-		}
+	include('application/delete_res.php');
 
-		if (!empty($new_dispo)) {
-			$st = $conn->prepare("UPDATE `voitures` SET Disponibility = ? WHERE ID_voiture = ?");
-			if ($st) {
-				$st->bind_param("ii", $new_dispo, $idd); // Corrected to "ii" assuming available is an integer
-				if ($st->execute()) {
-					$f++;
-				}
-				$st->close();
-			} else {
-				echo "Error preparing statement for available: " . $conn->error;
-			}
-		}
-
-		echo "<script>alert('{$f} modification(s) have been committed.');</script>";
-	}
-
-
+	include('application/edit_admin.php');
 	?>
 
-	<!--welcome-hero start -->
 	<section id="home" class="welcome-hero">
 
 		<!-- top-area Start -->
@@ -212,12 +127,16 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 			<div class="section-header">
 				<h2>Bienvenue <? echo $usernameadmin; ?></h2>
 			</div>
-			<ul class="horizontal-list">
-				<li onclick="showSection('featured-cars')">Les voitures</li>
-				<li onclick="showSection('Reservation_section')">Les reservations</li>
-				<li onclick="showSection('Messages_section')">Les messages</li>
-				<li onclick="showSection('more_section')">Plus</li>
-			</ul>
+			<table class="table table-dark">
+				<thead>
+					<tr>
+						<th style="cursor: pointer;" onclick="showSection('featured-cars')">Les voitures</th>
+						<th style="cursor: pointer;" onclick="showSection('Reservation_section')">Les reservations</th>
+						<th style="cursor: pointer;" onclick="showSection('Messages_section')">Les messages</th>
+						<th style="cursor: pointer;" onclick="showSection('more_section')">Plus</th>
+					</tr>
+				</thead>
+			</table>
 		</div>
 	</section>
 	<section class="tab-content hidden" id="featured-cars" class="featured-cars">
@@ -335,6 +254,77 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 		</div>
 
 	</section>
+	<section class="tab-content hidden container" id="Reservation_section">
+		<table class="table table-striped table-dark">
+			<thead>
+				<tr>
+					<th scope="col">voiture</th>
+					<th scope="col">Nom</th>
+					<th scope="col">Telephone</th>
+					<th scope="col">Email</th>
+					<th scope="col">Date de debut</th>
+					<th scope="col">Date de fin</th>
+					<th scope="col">Disbonibility</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+
+				<?
+				$sql_reservation = "SELECT * FROM `reservation`";
+				$resultreservation = $conn->query($sql_reservation);
+				if ($resultreservation->num_rows > 0) {
+					$i = 1;
+					while ($rowreservation = $resultreservation->fetch_assoc()) {
+						$voitureidres = $rowreservation["ID_voiture"];
+						$querysql = "SELECT marque, module,	Disponibility FROM voitures where ID_voiture =" . $voitureidres;
+						$res = $conn->query($querysql);
+						while ($rowvoiture = $res->fetch_assoc()) {
+							$voituree = $rowvoiture["marque"] . " " . $rowvoiture["module"];
+							$disponibility_resault = $rowvoiture["Disponibility"];
+						}
+						$nom_et_prenom_reservation = $rowreservation["Nom_et_Prenom_c"];
+						$tele_res = $rowreservation["Telephone_c"];
+						$date_de_debut = $rowreservation["date_de_debut"];
+						$date_de_fin = $rowreservation["date_de_fin"];
+						$res_id = $rowreservation["ID_reservation"];
+						$email_res = $rowreservation["Email_client"];
+
+				?>
+						<tr>
+							<td scop="row"><? echo $voituree ?></td>
+							<td><? echo $nom_et_prenom_reservation ?></td>
+							<td><? echo $tele_res ?></td>
+							<td><? echo $email_res ?></td>
+							<td><? echo $date_de_debut ?></td>
+							<td><? echo $date_de_fin ?></td>
+							<td><? echo $disponibility_resault ?></td>
+							<td>
+								<form method="post">
+									<input class="hidden" type="text" name="nom_res" value="<? echo $nom_et_prenom_reservation ?>" />
+									<input class="hidden" type="text" name="id_reservation" value="<? echo $res_id ?>" />
+									<input class="hidden" type="text" name="Email_reservation" value="<? echo $email_res ?>" />
+									<input class="hidden" type="text" name="car_reserved" value="<? echo $voituree ?>" />
+									<input class="hidden" type="text" name="date_d" value="<? echo $date_de_debut ?>" />
+									<input class="hidden" type="text" name="date_f" value="<? echo $date_de_fin ?>" />
+									<button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Valider</button>
+								</form>
+							</td>
+							<td>
+								<form method="post">
+									<input class="hidden" type="text" name="id_reservation_supprimer" value="<? echo $res_id ?>">
+									<button class="btn btn-danger" type="submit">Supprimer</button>
+								</form>
+							</td>
+						</tr>
+				<?
+					}
+				}
+				?>
+			</tbody>
+		</table>
+	</section>
 	<!-- Messages section -->
 	<section class="tab-content hidden" id="Messages_section" class="clients-say">
 		<div class="container">
@@ -397,81 +387,101 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 	</section>
 	<!-- end message section -->
 	<!-- reservation section -->
-	<section class="tab-content hidden container" id="Reservation_section">
-		<table class="table">
-			<thead class="thead-dark">
-				<tr>
-					<th scope="col">voiture</th>
-					<th scope="col">Nom et prenom</th>
-					<th scope="col">Telephone</th>
-					<th scope="col">Date de debut</th>
-					<th scope="col">Date de fin</th>
-					<th scope="col">Disbonibility</th>
-				</tr>
-			</thead>
-			<tbody>
 
-				<?
-				$sql_reservation = "SELECT * FROM `reservation`";
-				$resultreservation = $conn->query($sql_reservation);
-				if ($resultreservation->num_rows > 0) {
-					$i = 1;
-					while ($rowreservation = $resultreservation->fetch_assoc()) {
-						$voitureidres = $rowreservation["ID_voiture"];
-						$querysql = "SELECT marque, module FROM voitures where ID_voiture =" . $voitureidres;
-						$res = $conn->query($querysql);
-						while ($rowvoiture = $res->fetch_assoc()) {
-							$voituree = $rowvoiture["marque"] . " " . $rowvoiture["module"];
-							$disponibility_resault = $rowvoiture["Disponibility"];
-							if ($disponibility_resault == '1') {
-								$dispoo = 'oui';
-							} else {
-								$dispoo = 'Non';
-							}
-						}
-						$nom_et_prenom_reservation = $rowreservation["Nom_et_Prenom_c"];
-						$tele_res = $rowreservation["Telephone_c"];
-						$date_de_debut = $rowreservation["date_de_debut"];
-						$date_de_fin = $rowreservation["date_de_fin"];
-						$res_id = $rowreservation["ID_reservation"];
-
-				?>
-						<tr>
-							<td><? echo $voituree ?></td>
-							<td><? echo $nom_et_prenom_reservation ?></td>
-							<td><? echo $tele_res ?></td>
-							<td><? echo $date_de_debut ?></td>
-							<td><? echo $date_de_fin ?></td>
-							<td><? echo $dispoo ?></td>
-							<td>
-								<form method="post">
-									<input class="hidden" type="text" name="id_reservation" value="<? echo $res_id ?>" />
-									<button type="submit" class="btn btn-sm btn-danger" style="margin-bottom: 10px;">Valider</button>
-								</form>
-							</td>
-						</tr>
-				<?
-					}
-				}
-				?>
-			</tbody>
-		</table>
-	</section>
 	<section id="more_section" class="tab-content hidden">
 		<div class="container">
 			<div class="service-content">
 				<div class="row">
 					<div class="col-md-4 col-sm-6">
-						<div class="single-service-item" style="cursor: pointer;" onclick="gerer_admins();">
+						<div class="single-service-item" style="cursor: pointer;">
 							<div class="single-service-icon">
-								<img src="../images/manager.png">
+								<img src="../images/manager.png" onclick="gerer_admins('admins');">
 							</div>
 							<h2>gérer les administrateurs</h2>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div><!--/.container-->
+			<div id="admins" class="hidden">
+				<table class="table table-striped table-dark">
+					<thead>
+						<tr>
+							<th scope="col">ID</th>
+							<th scope="col">Nom & Prenom</th>
+							<th scope="col">Username</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telephone</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$sql_admin = "SELECT * FROM `admins`";
+						$resultadmin = $conn->query($sql_admin);
+						if ($resultadmin->num_rows > 0) {
+							while ($row_admin = $resultadmin->fetch_assoc()) {
+								$id_admin = $row_admin["ID_admin"];
+								$nom_admin = $row_admin["Nom_admin"];
+								$user_admin = $row_admin["username"];
+								$email_admin = $row_admin["Email_admin"];
+								$tele_admin = $row_admin["Telephone_admin"];
+						?>
+								<tr>
+									<th scope="row"><?php echo $id_admin; ?></th>
+									<td><?php echo $nom_admin; ?></td>
+									<td><?php echo $user_admin; ?></td>
+									<td><?php echo $email_admin; ?></td>
+									<td><?php echo $tele_admin; ?></td>
+									<td>
+										<button class="btn btn-warning btn-sm" onclick="modifier_admin_detail('<?php echo $id_admin; ?>', '<?php echo $nom_admin; ?>', '<?php echo $user_admin; ?>', '<?php echo $email_admin; ?>', '<?php echo $tele_admin; ?>')">
+											<i class="fa fa-cog"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-danger btn-sm">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
+								</tr>
+						<?php
+							}
+						} else {
+							echo "<tr><td colspan='6'>No records found</td></tr>";
+						}
+						?>
+					</tbody>
+				</table>
+			</div>
+			<div id="editForm" class="hidden">
+				<h2>Edit Admin Details</h2>
+				<!-- Include form fields here, pre-populate with AJAX or server-side rendering -->
+				<form method="post" onsubmit="confirmDeletion(event)">
+					<div class="form-group">
+						<label for="adminId">ID</label>
+						<input type="text" class="form-control" id="adminId" name="adminId" readonly>
+					</div>
+					<div class="form-group">
+						<label for="adminName">Nom & Prenom</label>
+						<input type="text" class="form-control" id="adminName" name="adminName">
+					</div>
+					<div class="form-group">
+						<label for="adminUsername">Username</label>
+						<input type="text" class="form-control" id="adminUsername" name="adminUsername">
+					</div>
+					<div class="form-group">
+						<label for="adminEmail">Email</label>
+						<input type="email" class="form-control" id="adminEmail" name="adminEmail">
+					</div>
+					<div class="form-group">
+						<label for="adminPhone">Telephone</label>
+						<input type="text" class="form-control" id="adminPhone" name="adminPhone">
+					</div>
+					<button type="submit" class="btn btn-primary">Save Changes</button>
+					<button type="button" class="btn btn-secondary" onclick="gerer_admins('admins')">Cancel</button>
+				</form>
+			</div>
+		</div>
 
 	</section>
 	<?
@@ -485,6 +495,28 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 	<script src="../js/routour.js"></script>
 	<script src="../js/fermer.js"></script>
 	<script src="../js/edit.js"></script>
+	<script src="../js/admin_edit.js"></script>
+	<script>
+		function confirmDeletion(event) {
+			event.preventDefault(); // Prevent the form from submitting immediately
+
+			Swal.fire({
+				title: 'attetion',
+				text: "Êtes-vous sûr de vouloir faire cette action ?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'oui',
+			}).then((result) => {
+				if (result.isConfirmed) {
+					event.target.submit(); // Submit the form if the user confirms
+				}
+			});
+
+			return false; // Prevent form submission
+		}
+	</script>
 	<script>
 		<?php if ($deleted) : ?>
 			Swal.fire({
@@ -496,15 +528,26 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 		<?php endif; ?>
 	</script>
 	<script>
-		<?php if ($update) : ?>
+		<? if ($update) : ?>
 			Swal.fire({
 				icon: 'success',
 				title: 'valideé',
-				text: 'La reservation a été valideé',
+				text: 'la reservation a été valideé',
 				showConfirmButton: true,
 			})
-		<?php endif ?>
+		<? endif ?>
 	</script>
+	<script>
+		<? if ($deleted_res) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'supprimée',
+				text: 'La reservation a été supprimée',
+				showConfirmButton: true,
+			})
+		<? endif ?>
+	</script>
+	<script src="../js/admins.js"></script>
 </body>
 
 </html>

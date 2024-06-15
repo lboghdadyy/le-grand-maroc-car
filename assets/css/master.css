@@ -9,7 +9,7 @@ body {
   font-weight: 100;
   display: flex;
   overflow: hidden;
-  background: linear-gradient(#e23939, rgba(255, 255, 255, 0.7)), url(../images/welcome-hero/wallpaper.png);
+  background: linear-gradient(#000000, rgba(255, 255, 255, 0.7)), url(../images/welcome-hero/wallpaper.png);
   background-position: center;
   background-size: cover ;
   background-position-x: -300px;

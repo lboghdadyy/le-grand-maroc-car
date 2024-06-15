@@ -1,21 +1,29 @@
-const startDateInput = document.getElementById("start_date");
-const endDateInput = document.getElementById("end_date");
-const numDaysInput = document.getElementById("pzip_code");
+function calculateDays(prix) {
+    // Get the start and end dates
+    var startDate = document.getElementById('date1').value;
+    var endDate = document.getElementById('date2').value;
 
-    // Add event listeners to the date inputs
-    startDateInput.addEventListener("change", calculateDays);
-    endDateInput.addEventListener("change", calculateDays);
+    // Ensure both dates are filled
+    if (startDate && endDate) {
+        // Parse the dates
+        var start = new Date(startDate);
+        var end = new Date(endDate);
 
-    // Function to calculate the number of days between the start and end dates
-    function calculateDays() {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
+        // Calculate the time difference in milliseconds
+        var timeDiff = end - start;
 
-        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-            const timeDifference = endDate.getTime() - startDate.getTime();
-            const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-            numDaysInput.value = daysDifference;
+        // Convert time difference from milliseconds to days
+        var diffDays = timeDiff / (1000 * 3600 * 24);
+        total = diffDays * prix;
+
+        // Check if the difference is valid (positive number of days)
+        if (diffDays >= 0) {
+            messae = "Total jour est :"+diffDays+" et total montant est :"+total;
+            document.getElementById('pzip').value = messae ;
         } else {
-            numDaysInput.value = "";
+            alert('End date must be after the start date.');
         }
+    } else {
+        alert('Please select both start and end dates.');
     }
+}

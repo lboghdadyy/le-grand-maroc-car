@@ -59,7 +59,6 @@ $(document).ready(function(){
 				transitionStyle:"fade",
 				animateIn: 'fadeIn',
 				animateOut: 'fadeOutLeft'
-				// navText:["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"]
 			});
 
 
