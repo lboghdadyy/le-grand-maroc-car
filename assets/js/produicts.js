@@ -6,9 +6,8 @@
         for (var i = 0; i < voitures.length; i++) {
             voitures[i].classList.add('hidden');
         }
-        var add_form = document.getElementById(voitureId);
-        if(!add_form.classList.contains('hidden')){
-            add_form.classList.add('hidden');
-        }
+        var productToShow = document.getElementById(voitureId);
+        productToShow.classList.remove('hidden');
+        productToShow.classList.add('single-new-cars-item');
     }
     
