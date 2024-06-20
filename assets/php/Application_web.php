@@ -27,10 +27,10 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 	<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
 
 	<!-- title of site -->
-	<title>Le Grand Maroc Car</title>
+	<title>Admin</title>
 
 	<!-- For favicon png -->
-	<link rel="shortcut icon" type="image/icon" href="assets/logo/Red & White Minimalist Automotive Car Logo (2).png" />
+	<link rel="shortcut icon" type="image/icon" href="../logo/Red & White Minimalist Automotive Car Logo (2).png" />
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 	<!-- SweetAlert2 JS -->
@@ -39,6 +39,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 
 	<!--linear icon css-->
 	<link rel="stylesheet" href="../css/linearicons.css">
+
 
 	<!--flaticon.css-->
 	<link rel="stylesheet" href="../css/flaticon.css">
@@ -70,6 +71,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 <body>
 
 	<?
+	include('application/users.php');
 
 	include('application/deletemessage.php');
 
@@ -97,7 +99,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
 								<i class="fa fa-bars"></i>
 							</button>
-							<a class="navbar-brand" href="index.html"><img src="../logo/Red & White Minimalist Automotive Car Logo (2).png" style="width: 150px; height: 150px; margin-top: -40px;"><span></span></a>
+							<a class="navbar-brand" href="../../index.php"><img src="../logo/Red & White Minimalist Automotive Car Logo (2).png" style="width: 150px; height: 150px; margin-top: -40px;"><span></span></a>
 
 						</div><!--/.navbar-header-->
 						<!-- End Header Navigation -->
@@ -332,22 +334,45 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 				if ($resultreservation->num_rows > 0) {
 					$i = 1;
 					while ($rowreservation = $resultreservation->fetch_assoc()) {
+						$tr_id = "tr" . $i;
+						$vali = $rowreservation["Validation"];
+
+
 						$voitureidres = $rowreservation["ID_voiture"];
-						$querysql = "SELECT marque, module,	Disponibility FROM voitures where ID_voiture =" . $voitureidres;
+						$id_us = $rowreservation["Id_u"];
+						$querysql = "SELECT ID_voiture, marque, module,	Disponibility FROM voitures where ID_voiture =" . $voitureidres;
 						$res = $conn->query($querysql);
 						while ($rowvoiture = $res->fetch_assoc()) {
 							$voituree = $rowvoiture["marque"] . " " . $rowvoiture["module"];
 							$disponibility_resault = $rowvoiture["Disponibility"];
+							$iddd_v = $rowvoiture["ID_voiture"];
 						}
-						$nom_et_prenom_reservation = $rowreservation["Nom_et_Prenom_c"];
-						$tele_res = $rowreservation["Telephone_c"];
+						$querysqluser = "SELECT Nom_prenom, Email, Telephone,CIN FROM `utilisateurs` where Id_u = $id_us";
+						$resuser = $conn->query($querysqluser);
+						while ($rowuser = $resuser->fetch_assoc()) {
+							$nom_et_prenom_reservation = $rowuser["Nom_prenom"];
+							$tele_res = $rowuser["Telephone"];
+							$email_res = $rowuser["Email"];
+						}
+
 						$date_de_debut = $rowreservation["date_de_debut"];
 						$date_de_fin = $rowreservation["date_de_fin"];
 						$res_id = $rowreservation["ID_reservation"];
-						$email_res = $rowreservation["Email_client"];
 
+						if ($vali == "oui") {
 				?>
-						<tr>
+							<script>
+								document.addEventListener('DOMContentLoaded', function() {
+											const tr = document.getElementById("<? echo $tr_id ?>");
+											if (tr) {
+												tr.classList.add('bg-success');
+											}
+										})
+							</script>
+						<? }
+						?>
+						</script>
+						<tr id="<? echo $tr_id ?>">
 							<td scop="row"><? echo $voituree ?></td>
 							<td><? echo $nom_et_prenom_reservation ?></td>
 							<td><? echo $tele_res ?></td>
@@ -363,6 +388,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 									<input class="hidden" type="text" name="car_reserved" value="<? echo $voituree ?>" />
 									<input class="hidden" type="text" name="date_d" value="<? echo $date_de_debut ?>" />
 									<input class="hidden" type="text" name="date_f" value="<? echo $date_de_fin ?>" />
+									<input type="text" class="hidden" name="id_v" value="<? echo $iddd_v ?>">
 									<button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Valider</button>
 								</form>
 							</td>
@@ -374,6 +400,7 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							</td>
 						</tr>
 				<?
+						$i++;
 					}
 				}
 				?>
@@ -453,17 +480,27 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 			<h2>Option</h2>
 		</div>
 		<div class="container">
-			<div class="service-content">
-				<div class="row">
+			<div id="service-content" class="service-content">
+				<div class="row" id="service">
 					<div class="col-md-4 col-sm-6">
 						<div class="single-service-item" style="cursor: pointer;">
 							<div class="single-service-icon">
-								<img src="../images/manager.png" onclick="gerer_admins('admins');">
+								<img src="../images/businessman.png" onclick="gerer_admins('admins');">
 							</div>
-							<h2>gérer les administrateurs</h2>
+							<h2><a href="#">gérer les administrateurs</a></h2>
 						</div>
 					</div>
+					<div class="col-md-4 col-sm-6">
+						<div class="single-service-item">
+							<div class="single-service-icon">
+								<img src="../images/teamwork.png" onclick="gerer_admins('users');">
+							</div>
+							<h2><a href="#">gérer les utilisateurs</a></h2>
+						</div>
+						</di>
+					</div>
 				</div>
+
 			</div>
 			<div id="admins" class="hidden">
 				<div class="section-header">
@@ -528,15 +565,14 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 							<td></td>
 							<td></td>
 							<td>
-								<form style="margin-right: -30px; margin-top:-15px;">
-									<button class="btn btn-primary btn-lg" onclick="add_admin()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</form>
+								<button class="btn btn-primary btn-lg" onclick="add_admin()">
+									<i class="fa fa-plus"></i>
+								</button>
 							</td>
 								</tr>
 					</tbody>
 				</table>
+				<button class="btn btn-lg btn-primary" onclick="back('admins')">routour</button>
 			</div>
 			<div id="editForm" class="hidden">
 				<h2>Edit Admin Details</h2>
@@ -602,8 +638,63 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 					<button type="button" class="btn btn-secondary" onclick="gerer_admins('admins')">Cancel</button>
 				</form>
 			</div>
-		</div>
-
+			<div id="users" class="hidden">
+				<div class="section-header">
+					<h2>Les utilisateurs</h2>
+				</div>
+				<table class="table table-striped table-dark">
+					<thead>
+						<tr>
+							<th scope="col">ID</th>
+							<th scope="col">Nom & Prenom</th>
+							<th scope="col">Gender</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telephone</th>
+							<th scope="col">CIN</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$sql_users = "SELECT * FROM  `utilisateurs`";
+						$resultusers = $conn->query($sql_users);
+						if ($resultadmin->num_rows > 0) {
+							while ($row_user = $resultusers->fetch_assoc()) {
+								$id_user = $row_user["Id_u"];
+								$nom_user = $row_user["Nom_prenom"];
+								$user_gender = $row_user["gender"];
+								$email_user = $row_user["Email"];
+								$tele_user = $row_user["Telephone"];
+								$CIN_user = $row_user["CIN"];
+								$ville = $row_user["ville"];
+						?>
+								<tr>
+									<th scope="row"><?php echo $id_user; ?></th>
+									<td><?php echo $nom_user; ?></td>
+									<td><?php echo $user_gender; ?></td>
+									<td><?php echo $email_user; ?></td>
+									<td><?php echo $tele_user; ?></td>
+									<td><? echo $CIN_user ?></td>
+									<td>
+										<form style="margin-top: -15px;" method="post" onsubmit="confirmDeletion(event)">
+											<button type="submit" class="btn btn-danger btn-lg">
+												<i class="fa fa-trash"></i>
+											</button>
+											<input type="text" class="hidden" name="delet_user_id" value="<? echo $id_user ?>">
+										</form>
+									</td>
+								</tr>
+								<tr>
+							<?php
+							}
+						} else {
+							echo "<tr><td colspan='6'>No records found</td>";
+						}
+							?>
+					</tbody>
+				</table>
+				<button class="btn btn-lg btn-primary" onclick="back('users')">routour</button>
+			</div>
 	</section>
 	<?
 	$conn->close();
@@ -677,7 +768,19 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 				text: 'la reservation a été valideé',
 				showConfirmButton: true,
 			})
+
 		<? endif ?>
+	</script>
+	<script>
+		<? if ($deleted_user) : ?>
+			Swal.fire({
+				icon: 'success',
+				title: 'Deleted!',
+				text: 'Lutilisateur a ete bien supprime .',
+				showConfirmButton: true,
+			});
+		<? endif ?>
+	</script>
 	</script>
 	<script>
 		<? if ($deleted_res) : ?>
@@ -696,15 +799,29 @@ if (!isset($_GET["variable"]) || empty($_GET['variable'])) {
 				title: 'supprimée',
 				showConfirmButton: true,
 			})
-		<? else : ?>
-			Swal.fire({
-				icon: 'warning',
-				text: '<? echo $message ?>',
-				showConfirmButton,
-			})
 		<? endif ?>
 	</script>
 	<script src="../js/admins.js"></script>
+	<script>
+		function back(section) {
+			// Hide the specified section
+			var sectionElement = document.getElementById(section);
+			if (sectionElement) {
+				sectionElement.classList.add('hidden');
+			} else {
+				console.error("Section with ID '" + section + "' not found.");
+				return;
+			}
+
+			// Show the main service content section
+			var serviceContent = document.getElementById('service-content');
+			if (serviceContent) {
+				serviceContent.classList.remove('hidden');
+			} else {
+				console.error("Service content section not found.");
+			}
+		}
+	</script>
 </body>
 
 </html>

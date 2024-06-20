@@ -497,13 +497,7 @@ nav.navbar.bootsnav .navbar-toggle i{color: #e23939;}
     height:72px;
     border-radius:0;
 }
-/*-------------------------------------
-        10. Blog
---------------------------------------*/
 
-/*-------------------------------------
-        12. Contact
---------------------------------------*/
 .contact {
     background: #700505;
 }
@@ -522,34 +516,7 @@ nav.navbar.bootsnav .navbar-toggle i{color: #e23939;}
 
 
 
-/*hm-foot-email*/
-/*.footer-copyright */
-.footer-copyright {
-    padding: 20px 0 17px;
-    border-top: 1px solid #434859;
-}
-.footer-copyright p,.footer-copyright p a {
-    color: #a8a9bf;
-    font-size: 14px;
-    font-weight: 400;
-    text-transform: capitalize;
-}
-.footer-social{text-align: right;}
-.footer-social a i {
-    color: #fff;
-    opacity: .40;
-    font-size: 14px;
-    margin-left: 16px;
-    -webkit-transition: .3s; 
-    -moz-transition:.3s; 
-    -ms-transition:.3s; 
-    -o-transition:.3s;
-    transition: .3s;
-}
-.footer-social i:hover{opacity: .70;}
-/*.footer-copyright */
-
-/*===============================
+    /*===============================
     Scroll Top
 ===============================*/
 #scroll-Top  .return-to-top {

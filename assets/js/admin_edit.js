@@ -1,5 +1,6 @@
 function gerer_admins(id) {
     document.getElementById(id).classList.toggle('hidden');
+    document.getElementById('service-content').classList.add('hidden');
 }
 
 function modifier_admin_detail(id) {

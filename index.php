@@ -120,11 +120,9 @@
 
 						<!-- Collect the nav links, forms, and other content for toggling -->
 						<div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
-							<ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-								<li class=" scroll active"><a href="#home">accueil</a></li>
-								<li class="scroll"><a href="#new-cars">Nouvelles voitures</a></li>
-								<li class="scroll"><a href="#featured-cars">voitures</a></li>
-								<li class="scroll"><a href="#contact">contact nous</a></li>
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="master.php">Connecter</a></li>
+								<li><a href="sign_up.php">register</a></li>
 							</ul><!--/.nav -->
 						</div><!-- /.navbar-collapse -->
 					</div><!--/.container-->
@@ -245,64 +243,6 @@
 					?>
 
 							<!-- Car Item -->
-							<div class="hidden" id="<? echo $reservationid ?>">
-								<form method="post">
-									<div class="row">
-										<div class="col-50">
-											<label>Votre Nom :</label>
-											<input type="text" id="name" name="name" placeholder="Nom" required />
-										</div>
-										<div class="col-50">
-											<label>Voiture :</label>
-											<input name="voiture" type="text" value="<? echo $marque . " " . $module ?>" id="voiture">
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-50">
-											<label>Votre Telephone :</label>
-											<input type="text" id="tele" name="phone" placeholder="Telephone" required />
-										</div>
-										<div class="col-50">
-											<label>votre Email :</label>
-											<input type="email" id="email" name="email" placeholder="Email" required />
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-50">
-											<label>CIN :</label>
-											<input type="text" name="CIN" placeholder="Votre CIN" required />
-										</div>
-									</div>
-									<div class="row">
-										&nbsp; &nbsp;&nbsp;<label for="booking">Sélectionnez une Période Valide :</label>
-									</div>
-									<div class="row">
-										<div class="col-50">
-											<label>Date De Debut :</label>
-											<input type="date" id="date1" name="debut_date" />
-										</div>
-										<div class="col-50">
-											<label>Date De Fin :</label>
-											<input type="date" id="date2" name="fin_date" />
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-50">
-											<label for="montant">total montant</label>
-											<input onclick="calculateDays(<? echo $prix ?>)" type="text" id="pzip" name="pzip_code" readonly />
-										</div>
-									</div>
-									<input type="text" name="id" class="hidden" value="<? echo $voitureidres ?>">
-									<center>
-										<input type="submit" value="Suivant" class="welcome-btn">
-										<button type="button" class="welcome-btn" onclick="fermer('<? echo $voitureid ?>','<? echo $reservationid ?>', event)">Fermer</button>
-									</center>
-
-
-								</form>
-
-
-							</div>
 							<div class="col-lg-3 col-md-4 col-sm-6">
 								<div class="single-featured-cars">
 									<div class="featured-img-box">
@@ -343,7 +283,7 @@
 												?>
 											</p>
 
-											<button class="welcome-btn new-cars-btn" onclick="Reservation('<? echo $voitureid ?>','<? echo $reservationid ?>',event)">
+											<button class="welcome-btn new-cars-btn" onclick="window.location.href='master.php'">
 												Reserver
 											</button>
 											<button class="welcome-btn new-cars-btn" onclick="show_voitures('<? echo $voitureid ?>', event)">Fermer</button>
